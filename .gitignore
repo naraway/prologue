@@ -22,10 +22,14 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# idea
+# Idea
 .idea
 .gradle
-.nara
 build
 gradlew
 gradlew.bat
+
+# Misc
+.nara
+.DS_Store
+Thumbs.db
