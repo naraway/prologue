@@ -1,0 +1,71 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+    id "name.remal.sonarlint" version "1.5.0"
+}
+
+ext {
+    dramaPrologueVersion = "3.2.0"
+    accentVersion =  "3.2.0"
+
+    lombokVersion = "1.18.20"
+    springBootVersion = "2.6.2"
+    springSecurityOauth2Version = "2.5.1.RELEASE"
+    swaggerVersion = "3.0.0"
+}
+
+allprojects {
+    group = "io.naraway"
+    version = dramaPrologueVersion
+
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, "seconds"
+    }
+}
+
+subprojects {
+    apply plugin: "java-library"
+    apply plugin: "maven-publish"
+    apply plugin: "signing"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "name.remal.sonarlint"
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        }
+    }
+
+    dependencies {
+        compileOnly("org.projectlombok:lombok:${lombokVersion}")
+        testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+        annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+        testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    }
+
+    sonarlint {
+        ignoreFailures = false
+        excludes {
+            source "**/test/java/**/*"
+
+            message "java:S1135" // Track uses of TODO tags
+            message "java:S1301" // switch" statements should have at least 3 case clauses
+            message "java:S115" // Constant names should comply with a naming convention
+            message "java:S1192" // String literals should not be duplicated
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    tasks.withType(JavaCompile) {
+//        options.compilerArgs << "-Xlint:deprecation" // << "-Xlint:unchecked"
+    }
+}
