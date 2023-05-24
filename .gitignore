@@ -24,7 +24,6 @@ hs_err_pid*
 
 # Idea
 .idea
-*.iml
 .gradle
 build
 gradlew

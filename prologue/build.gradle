@@ -1,0 +1,43 @@
+plugins {
+    id 'jacoco'
+}
+
+apply from: 'jacoco.gradle'
+
+test {
+    useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
+}
+
+dependencies {
+    api "io.naraway:accent:${accentVersion}"
+
+    implementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.springframework.security:spring-security-oauth2-authorization-server:${springSecurityAuthServerVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}"
+    implementation "org.ehcache:ehcache:${ehcacheVersion}"
+    implementation "cz.jirutka.rsql:rsql-parser:${rsqlParserVersion}"
+    implementation "com.github.tennaito:rsql-jpa:${rsqlJpaVersion}"
+    implementation "com.github.rutledgepaulv:rest-query-engine:${restQueryEngineVersion}"
+    implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
+    implementation "commons-io:commons-io:${commonsIoVersion}"
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-3.+'
+    testImplementation 'org.codehaus.groovy:groovy-all:3.+'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId group
+            artifactId project.name
+            version version
+            from components.java
+        }
+    }
+}
