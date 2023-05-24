@@ -1,0 +1,10 @@
+# spring.factories
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.naraway.prologue.autoconfigure.PrologueAutoConfiguration,\
+io.naraway.prologue.autoconfigure.WebSecurityAutoConfiguration,\
+io.naraway.prologue.autoconfigure.InternalAuthProviderAutoConfiguration,\
+io.naraway.prologue.autoconfigure.HttpHeaderProviderAutoConfiguration,\
+io.naraway.prologue.autoconfigure.DockAutoConfiguration,\
+io.naraway.prologue.autoconfigure.MongoTransactionAutoConfiguration,\
+io.naraway.prologue.autoconfigure.ExceptionHandlerAutoConfiguration,\
+io.naraway.prologue.autoconfigure.SpringDocAutoConfiguration
