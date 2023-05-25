@@ -56,21 +56,25 @@ public class PrologueProperties {
         private boolean enabled;
         private String actorId;
         private String pavilionId;
-        private List<String> cineroomIds;
         private String kollectionId;
+        private String osid;
+        private String usid;
+        private List<String> cineroomIds;
         private List<String> roles;
 
         public StageRequestProperties() {
             //
-            this.username = "user@naraway.io";
+            this.username = "nara@naraway.io";
             this.userType = UserType.Citizen;
-            this.displayName = "Nara Way";
-            this.email = "user@naraway.io";
+            this.displayName = "NARA Way";
+            this.email = "nara@naraway.io";
             this.enabled = true;
             this.actorId = "1@1:1:1:1-1";
             this.pavilionId = "1:1:1";
-            this.cineroomIds = Arrays.asList("1:1:1:1", "1:1:1:2");
+            this.osid = "nextree";
+            this.usid = "nara";
             this.kollectionId = "nara";
+            this.cineroomIds = Arrays.asList("1:1:1:1", "1:1:1:2");
             this.roles = Arrays.asList("manager", "user");
         }
     }
@@ -116,8 +120,8 @@ public class PrologueProperties {
         public InternalAuthProperties() {
             //
             this.enabled = true;
-            this.refreshIntervalSeconds = 60 * 5; // 5 Minutes
-            this.password = "narasecret-internal";
+            this.refreshIntervalSeconds = 60 * 15; // 15 Minutes
+            this.password = "my-internal-secret";
             this.client = new Client();
             this.rest = RestRequesterProperties.builder()
                     .baseUrl("http://checkpoint:8080")
@@ -134,7 +138,7 @@ public class PrologueProperties {
             public Client() {
                 //
                 this.id = "nara";
-                this.secret = "narasecret";
+                this.secret = "my-secret";
             }
         }
     }
@@ -152,8 +156,8 @@ public class PrologueProperties {
             //
             this.enabled = true;
             this.cacheType = DockCacheType.EHCACHE;
-            this.cacheTtlSeconds = 60 * 30; // 5 Minutes
-            this.cacheRefreshIntervalSeconds = 20;
+            this.cacheTtlSeconds = 60 * 30; // 30 Minutes
+            this.cacheRefreshIntervalSeconds = 60 * 15; // 15 Minutes
             this.rest = RestRequesterProperties.builder()
                     .baseUrl("http://metro:8080")
                     .maxMemorySize(1024 * 1024 * 10) // 10 MB

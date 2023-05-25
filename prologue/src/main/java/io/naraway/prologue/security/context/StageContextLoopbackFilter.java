@@ -63,9 +63,11 @@ public class StageContextLoopbackFilter implements Filter {
                 .enabled(props.isEnabled())
                 .actorId(props.getActorId())
                 .pavilionId(props.getPavilionId())
-                .cineroomIds(props.getCineroomIds())
+                .osid(props.getOsid())
+                .usid(props.getUsid())
                 .kollectionId(props.getKollectionId())
                 .dramaId(this.drama)
+                .cineroomIds(props.getCineroomIds())
                 .roles(props.getRoles())
                 .attributes(Collections.emptyMap())
                 .build();

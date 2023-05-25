@@ -1,9 +1,9 @@
 # prologue
 
-The Prologue library provides the authentication, authorization logic 
-and role checks used by all Drama development, and a number of filters 
-by default for security. several filters for security by default. 
-These are automatically applied when you include Prologue library 
+The Prologue library provides the authentication, authorization logic
+and role checks used by all Drama development, and a number of filters
+by default for security. several filters for security by default.
+These are automatically applied when you include Prologue library
 dependencies, please see [NARA Way](https://naraway.io).
 
 ## Features
@@ -24,8 +24,8 @@ implementation 'io.naraway:prologue'
 
 ## Configuration
 
-Prologue has settings that are defined by default and additional 
-settings that you need to add. Below is a list of You can see the 
+Prologue has settings that are defined by default and additional
+settings that you need to add. Below is a list of You can see the
 full list of settings, their default values, and descriptions.
 
 ```yaml
@@ -88,13 +88,16 @@ nara:
     # Stub data that will be used as the default context if prologue. 
     # enabled is false.
     default-context:
-      username: john@naraway.io
+      username: nara@naraway.io
       user-type: citizen
-      display-name: John
-      email: john@naraway.io
+      display-name: NARA Way
+      email: nara@naraway.io
       enabled: true
       actor-id: 1@1:1:1:1-1
       pavilion-id: 1:1:1
+      osid: nextree
+      usid: nara
+      kollection-id: nara
       cineroom-ids: 1:1:1:1, 1:1:1:2
       roles: manager, user
       attributes:
@@ -107,7 +110,7 @@ nara:
     # between back services.
     internal-auth:
       enabled: true
-      refresh-interval-seconds: 300
+      refresh-interval-seconds: 900 # 15 Minutes
       username: drama # It is automatically set to the spring application name
       password: my-internal-secret # Whatever else
       client:
@@ -126,8 +129,8 @@ nara:
     dock:
       enabled: true
       cache-type: ehcache
-      cache-ttl-seconds: 1800
-      cache-refresh-interval-seconds: 20
+      cache-ttl-seconds: 1800 # 30 Minutes
+      cache-refresh-interval-seconds: 900 # 15 Minutes
       rest:
         base-url: http://metro:8080
         loopback: false
@@ -135,7 +138,7 @@ nara:
         retry: 3
         request-timeout-seconds: 5
         max-memory-size: 1048576
-    
+
     # Set the XSS security filter. By default, it escapes HTML for regular form
     # requests and only tags for JSON/XML requests.
     xss-secure:
@@ -153,9 +156,9 @@ nara:
 
 ### DynamicQuery
 
-Provides helper classes for JPA and mongo for making simple dynamic queries. 
-These are `MongoDynamicQuery` and `JpaDynamicQuery`, respectively. They take 
-`QueryParams` and a `MongoTemplate` or `EntityManager` and support casting and 
+Provides helper classes for JPA and mongo for making simple dynamic queries.
+These are `MongoDynamicQuery` and `JpaDynamicQuery`, respectively. They take
+`QueryParams` and a `MongoTemplate` or `EntityManager` and support casting and
 paging.
 
 ```java
@@ -175,11 +178,11 @@ public class FooFlow {
 
 ### RestRequester
 
-RestRequester provides a waapper functionality for WebClient to handle REST 
-calls between national backend services. Calls between services can be made 
-using an internal token, which is an internal authentication, or with a 
-header consumer object that passes the HTTP header values of the initial 
-requesting backend service from the front end as is. Alternatively, it can 
+RestRequester provides a waapper functionality for WebClient to handle REST
+calls between national backend services. Calls between services can be made
+using an internal token, which is an internal authentication, or with a
+header consumer object that passes the HTTP header values of the initial
+requesting backend service from the front end as is. Alternatively, it can
 be created without any headers and used to call external non-NARA services.
 
 ```java
@@ -188,15 +191,15 @@ public class ProductProxy {
     //
     private final InternalAuthProvider internalAuthProvider;
     private final RestRequesterProperties restProps;
-    
+
     private RestRequester rest;
 
     @PostConstruct
     private void initialize() {
         //
         this.rest = new RestRequester(this.restProps, this.internalAuthProvider);
-    }    
-    
+    }
+
     public Product findServerProducts(String productId) {
         //
         String path = UriComponentsBuilder
@@ -206,16 +209,16 @@ public class ProductProxy {
 
         return this.rest.get(path, Product.class).block();
     }
-    
+
     // ...
 }
 ```
 
 ### JwtSupport Bean
 
-This helper bean reads the JWT value passed in the user's REST request, 
-validates it with the server's signing information, and extracts the value 
-inside the token as a claim. It comes in a Spring context, so you can use 
+This helper bean reads the JWT value passed in the user's REST request,
+validates it with the server's signing information, and extracts the value
+inside the token as a claim. It comes in a Spring context, so you can use
 it to read the JWT value directly.
 
 ```java
@@ -223,14 +226,14 @@ it to read the JWT value directly.
 public class ProductProxy {
     //
     private final JwtSupport jwtSupport;
-    
+
     // ...
-    
+
     private Map<String, Object> getClaims(String token) {
         //
         return jwtSupport.getClaims(token);
     }
-    
+
     // ...
 }
 ```
