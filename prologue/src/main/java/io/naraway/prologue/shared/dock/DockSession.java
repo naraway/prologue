@@ -185,6 +185,64 @@ public class DockSession {
         return kollection.getKollection().getId();
     }
 
+    public String getOsid(String actorId) {
+        //
+        if (log.isTraceEnabled()) {
+            log.trace("Get osid, actorId = {}", actorId);
+        }
+
+        CitizenKey citizenKey = null;
+        if (StringUtils.hasText(actorId)) {
+            citizenKey = getCitizenKey(actorId);
+        }
+
+        if (citizenKey == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("Cannot find osid, citizenKey = {}", citizenKey);
+            }
+            return null;
+        }
+
+        String osid = this.dockContext.getOsid(citizenKey);
+        if (osid == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("No osid found, return null");
+            }
+            return null;
+        }
+
+        return osid;
+    }
+
+    public String getUsid(String actorId) {
+        //
+        if (log.isTraceEnabled()) {
+            log.trace("Get usid, actorId = {}", actorId);
+        }
+
+        CitizenKey citizenKey = null;
+        if (StringUtils.hasText(actorId)) {
+            citizenKey = getCitizenKey(actorId);
+        }
+
+        if (citizenKey == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("Cannot find usid, citizenKey = {}", citizenKey);
+            }
+            return null;
+        }
+
+        String usid = this.dockContext.getUsid(citizenKey);
+        if (usid == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("No usid found, return null");
+            }
+            return null;
+        }
+
+        return usid;
+    }
+
     private CitizenKey getCitizenKey(String tenantId) {
         //
         TenantType tenantType = TenantKey.getTenantType(tenantId);

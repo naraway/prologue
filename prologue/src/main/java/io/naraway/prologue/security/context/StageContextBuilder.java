@@ -39,6 +39,8 @@ public class StageContextBuilder {
     public static final String ROLE_INTERNAL = "_internal_";
     public static final String ROLES = "roles";
     public static final String KOLLECTION_ID = "kollectionId";
+    public static final String OSID = "osid";
+    public static final String USID = "usid";
     public static final String ACTOR_ID = "actorId";
 
     @Value("${spring.application.name:}")
@@ -78,6 +80,8 @@ public class StageContextBuilder {
         //
         String requestActorId = getRequestActorId(request);
         String pavilionId = getRequestPavilionId(request);
+        String osid = getRequestOsid(request);
+        String usid = getRequestUsid(request);
         List<String> requestRoles = getRequestRoles(request);
         String requestKollection = getRequestKollection(request);
         Map<String, Object> claims = this.jwtSupport.getClaims(request);
@@ -106,7 +110,10 @@ public class StageContextBuilder {
                         .displayName(displayName)
                         .cineroomIds(getValues(attributes, JwtNames.ATTRIBUTES_CINEROOM_IDS))
                         .pavilionId(pavilionId)
+                        .osid(osid)
+                        .usid(usid)
                         .kollectionId(requestKollection)
+                        .dramaId(this.drama)
                         .roles(requestRoles)
                         .userType(UserType.Service)
                         .attributes(attributes)
@@ -121,6 +128,8 @@ public class StageContextBuilder {
                         .displayName(displayName)
                         .cineroomIds(Collections.emptyList())
                         .pavilionId(pavilionId)
+                        .osid(osid)
+                        .usid(usid)
                         .dramaId(this.drama)
                         .roles(List.of(ROLE_INTERNAL))
                         .userType(UserType.Internal)
@@ -137,6 +146,8 @@ public class StageContextBuilder {
                         .displayName(displayName)
                         .cineroomIds(Collections.emptyList())
                         .pavilionId(pavilionId)
+                        .osid(osid)
+                        .usid(usid)
                         .dramaId(this.drama)
                         .roles(getValues(attributes, JwtNames.ATTRIBUTES_SERVICE_ROLES))
                         .userType(UserType.Service)
@@ -151,6 +162,8 @@ public class StageContextBuilder {
                     .displayName(displayName)
                     .cineroomIds(getValues(attributes, JwtNames.ATTRIBUTES_CINEROOM_IDS))
                     .pavilionId(pavilionId)
+                    .osid(osid)
+                    .usid(usid)
                     .kollectionId(requestKollection)
                     .dramaId(this.drama)
                     .roles(requestRoles)
@@ -262,6 +275,7 @@ public class StageContextBuilder {
             if (log.isTraceEnabled()) {
                 log.trace("No request drama role");
             }
+
             return Collections.emptyList();
         }
 
@@ -277,6 +291,68 @@ public class StageContextBuilder {
         List<String> roles = this.dockSession.getRoles(requestActorId, this.drama, refererUrl, jti);
 
         return CollectionUtils.isEmpty(roles) ? Collections.emptyList() : roles;
+    }
+
+    private String getRequestOsid(HttpServletRequest request) {
+        //
+        String scope = getScope(request);
+
+        if (this.dockSession == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("DockSession is not activated, use header osid");
+            }
+            if (StringUtils.hasText(request.getHeader(OSID))) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Parsed request osid = {}", request.getHeader(OSID));
+                }
+                return request.getHeader(OSID);
+            }
+            if (log.isTraceEnabled()) {
+                log.trace("No request osid");
+            }
+
+            return null;
+        }
+
+        // for local development
+        if (isInternalRequest(request) && SCOPE_INTERNAL.equals(scope)) {
+            return null;
+        }
+
+        String requestActorId = getRequestActorId(request);
+
+        return this.dockSession.getOsid(requestActorId);
+    }
+
+    private String getRequestUsid(HttpServletRequest request) {
+        //
+        String scope = getScope(request);
+
+        if (this.dockSession == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("DockSession is not activated, use header usid");
+            }
+            if (StringUtils.hasText(request.getHeader(USID))) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Parsed request usid = {}", request.getHeader(USID));
+                }
+                return request.getHeader(USID);
+            }
+            if (log.isTraceEnabled()) {
+                log.trace("No request usid");
+            }
+
+            return null;
+        }
+
+        // for local development
+        if (isInternalRequest(request) && SCOPE_INTERNAL.equals(scope)) {
+            return null;
+        }
+
+        String requestActorId = getRequestActorId(request);
+
+        return this.dockSession.getUsid(requestActorId);
     }
 
     private String getRequestKollection(HttpServletRequest request) {
@@ -296,6 +372,7 @@ public class StageContextBuilder {
             if (log.isTraceEnabled()) {
                 log.trace("No request kollection id");
             }
+
             return null;
         }
 

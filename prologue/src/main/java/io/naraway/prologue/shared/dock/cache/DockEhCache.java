@@ -68,9 +68,9 @@ public class DockEhCache implements DockCache {
     }
 
     @Override
-    public void setCache(String key, String dock) {
+    public void setCache(String key, String value) {
         //
-        dockCache.put(key, dock);
+        dockCache.put(key, value);
     }
 
     @Override

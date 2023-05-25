@@ -16,35 +16,119 @@ public class DockContext {
         //
         String key = String.format("%s:%s", citizen.getId(), jti);
 
-        String value = dockCache.getCache(key);
+        String value = this.dockCache.getCache(key);
         if (value != null) {
             return Dock.fromJson(value);
         }
 
         try {
-            dockCache.requestLock(key);
-            value = dockCache.getCache(key); // double check
+            this.dockCache.requestLock(key);
+            value = this.dockCache.getCache(key); // double check
             if (value == null) {
                 if (log.isTraceEnabled()) {
                     log.trace("Dock cache get for citizen, key = {}", key);
                 }
-                Dock dock = this.dockProxy.get(citizen.getId());
+                Dock dock = this.dockProxy.findDock(citizen.getId());
 
                 if (dock == null) {
                     if (log.isTraceEnabled()) {
                         log.trace("Dock not found");
                     }
+
                     return null;
                 }
 
                 if (log.isTraceEnabled()) {
                     log.trace("Active dock found, dock = {}", dock.toPrettyJson());
                 }
-                return dock;
+
+                value = dock.toJson();
+                this.dockCache.setCache(key, value);
             }
+
             return Dock.fromJson(value);
         } finally {
-            dockCache.releaseLock(key);
+            this.dockCache.releaseLock(key);
+        }
+    }
+
+    public String getOsid(CitizenKey citizen) {
+        //
+        String key = String.format("osid_%s", citizen.getId());
+
+        String value = this.dockCache.getCache(key);
+        if (value != null) {
+            return value;
+        }
+
+        try {
+            this.dockCache.requestLock(key);
+            value = this.dockCache.getCache(key); // double check
+            if (value == null) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Osid cache get for citizen, key = {}", key);
+                }
+                String osid = this.dockProxy.findOsid(citizen.getId());
+
+                if (osid == null) {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Osid not found");
+                    }
+
+                    return null;
+                }
+
+                if (log.isTraceEnabled()) {
+                    log.trace("Osid found, osid = {}", osid);
+                }
+
+                value = osid;
+                this.dockCache.setCache(key, value);
+            }
+
+            return value;
+        } finally {
+            this.dockCache.releaseLock(key);
+        }
+    }
+
+    public String getUsid(CitizenKey citizen) {
+        //
+        String key = String.format("usid_%s", citizen.getId());
+
+        String value = this.dockCache.getCache(key);
+        if (value != null) {
+            return value;
+        }
+
+        try {
+            this.dockCache.requestLock(key);
+            value = this.dockCache.getCache(key); // double check
+            if (value == null) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Usid cache get for citizen, key = {}", key);
+                }
+                String usid = this.dockProxy.findUsid(citizen.getId());
+
+                if (usid == null) {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Usid not found");
+                    }
+
+                    return null;
+                }
+
+                if (log.isTraceEnabled()) {
+                    log.trace("Usid found, usid = {}", usid);
+                }
+
+                value = usid;
+                this.dockCache.setCache(key, value);
+            }
+
+            return value;
+        } finally {
+            this.dockCache.releaseLock(key);
         }
     }
 }
