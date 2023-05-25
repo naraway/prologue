@@ -14,7 +14,7 @@ dependencies, please see [NARA Way](https://naraway.io).
 - Filters for exception handling when backend services fail
 - Internal token bean for calls between internal services
 - JAP and Mongo handling for dynamic queries
-- REST call helper implementations with WebFlex
+- REST call helper implementations with WebFlux
 
 ## Installation
 
@@ -138,7 +138,7 @@ nara:
         retry: 3
         request-timeout-seconds: 5
         max-memory-size: 1048576
-
+    
     # Set the XSS security filter. By default, it escapes HTML for regular form
     # requests and only tags for JSON/XML requests.
     xss-secure:
@@ -191,15 +191,15 @@ public class ProductProxy {
     //
     private final InternalAuthProvider internalAuthProvider;
     private final RestRequesterProperties restProps;
-
+    
     private RestRequester rest;
 
     @PostConstruct
     private void initialize() {
         //
         this.rest = new RestRequester(this.restProps, this.internalAuthProvider);
-    }
-
+    }    
+    
     public Product findServerProducts(String productId) {
         //
         String path = UriComponentsBuilder
@@ -209,7 +209,7 @@ public class ProductProxy {
 
         return this.rest.get(path, Product.class).block();
     }
-
+    
     // ...
 }
 ```
